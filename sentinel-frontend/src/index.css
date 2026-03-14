@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg: #0a1628;
+  --color-accent: #00d4ff;
+  --color-safe: #00ff87;
+  --color-alert: #ff3d3d;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--color-bg);
+  color: #e8f4f8;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a3a5c;
+  border-radius: 4px;
+}
+
+/* Child marker pulse animation */
+@keyframes sentinel-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+}
+
+.sentinel-marker {
+  animation: sentinel-pulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px #00d4ff99);
+}
+
+/* Mapbox attribution override */
+.mapboxgl-ctrl-attrib {
+  opacity: 0.5;
+  font-size: 10px;
+}

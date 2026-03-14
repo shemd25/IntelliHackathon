@@ -1,7 +1,14 @@
-# Sentinel Backend — .gitignore
-
-# Build
+# Maven
 target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# !.mvn/wrapper/maven-wrapper.jar
 
 # IDE
 .idea/
@@ -10,11 +17,11 @@ target/
 *.swp
 *.swo
 
-# Maven wrapper
-!.mvn/wrapper/maven-wrapper.jar
-
 # Environment
 .env
+.env.local
+.env.*.local
+! .env.example
 
 # OS
 .DS_Store
@@ -22,3 +29,17 @@ Thumbs.db
 
 # Logs
 *.log
+logs/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+.factorypath
+.project
+.settings/
+.classpath
+
+# Misc
+*.tsbuildinfo

@@ -1,27 +1,24 @@
-# IDEs and editors
-.idea/
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Editor/IDE
 .vscode/
+.idea/
 *.swp
 *.swo
 *.iml
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
 
-# Build and dependencies
-node_modules/
-dist/
-build/
-target/
-out/
-bin/
-
-# Environment files
+# Environment
 .env
 .env.local
 .env.*.local
-*.env
 ! .env.example
 
 # Logs
@@ -32,7 +29,5 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Misc
-.agent/
-.claude/
-.expo/
 *.tsbuildinfo
+.claude/
