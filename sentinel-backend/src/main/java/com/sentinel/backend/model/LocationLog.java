@@ -2,6 +2,7 @@ package com.sentinel.backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -34,4 +35,8 @@ public class LocationLog {
 
     @Column(name = "recorded_at", nullable = false)
     private Instant recordedAt;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
 }
