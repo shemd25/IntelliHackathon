@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sentinel WebSocket Test</title>
+    <!-- Include SockJS and StompJS from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@5.0.0/bundles/stomp.umd.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .log { background: #f4f4f4; padding: 10px; height: 300px; overflow-y: scroll; border: 1px solid #ccc; font-family: monospace; white-space: pre-wrap; }
+        input, button { margin: 5px 0; padding: 5px; }
+        input[type="text"] { width: 300px; }
+    </style>
+</head>
+<body>
+    <h2>Sentinel WebSocket Test Client</h2>
+    
+    <div>
+        <label>JWT Token:</label><br>
+        <input type="text" id="jwtToken" placeholder="Paste eyJ... token here" />
+    </div>
+    <div>
+        <label>Child ID:</label><br>
+        <input type="text" id="childId" placeholder="Paste child UUID here" />
+    </div>
+    
+    <button onclick="connect()">1. Connect</button>
+    <button onclick="sendLocation()" id="sendBtn" disabled>2. Send Location Update</button>
+    <button onclick="disconnect()" id="disconnectBtn" disabled>Disconnect</button>
+
+    <h3>Connection Log</h3>
+    <div class="log" id="log"></div>
+
+    <script>
+        let client = null;
+
+        function logMessage(msg) {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function connect() {
+            const token = document.getElementById('jwtToken').value;
+            const childId = document.getElementById('childId').value;
+            
+            if (!token || !childId) {
+                alert("Please enter both JWT Token and Child ID");
+                return;
+            }
+
+            client = new window.StompJs.Client({
+                brokerURL: 'ws://localhost:8080/ws/sensor',
+                connectHeaders: {
+                    Authorization: `Bearer ${token}`
+                },
+                debug: function (str) {
+                    logMessage(str);
+                },
+                reconnectDelay: 0,
+                heartbeatIncoming: 4000,
+                heartbeatOutgoing: 4000,
+            });
+
+            client.onConnect = function (frame) {
+                logMessage('Connected: ' + frame);
+                document.getElementById('sendBtn').disabled = false;
+                document.getElementById('disconnectBtn').disabled = false;
+                
+                // Subscribe to the location updates to verify it gets processed
+                client.subscribe(`/topic/location/${childId}`, function (message) {
+                    logMessage('Received on /topic/location: ' + message.body);
+                });
+                logMessage(`Subscribed to /topic/location/${childId}`);
+            };
+
+            client.onStompError = function (frame) {
+                logMessage('Broker reported error: ' + frame.headers['message']);
+                logMessage('Additional details: ' + frame.body);
+            };
+
+            logMessage('Attempting to connect...');
+            client.activate();
+        }
+
+        function sendLocation() {
+            const childId = document.getElementById('childId').value;
+            const payload = {
+                childId: childId,
+                sessionId: "test-session-123",
+                timestamp: Date.now(),
+                location: {
+                    lat: 18.0179,
+                    lng: -76.8099,
+                    accuracy: 5.0,
+                    speed: 2.0,
+                    heading: 90.0
+                },
+                motion: {
+                    accelX: 0.1, accelY: 0.2, accelZ: 9.8,
+                    gyroX: 0, gyroY: 0, gyroZ: 0
+                },
+                deviceMeta: {
+                    battery: 85,
+                    network: "WIFI",
+                    appState: "foreground"
+                }
+            };
+
+            logMessage('Sending location payload to /app/sensor.stream...');
+            client.publish({
+                destination: '/app/sensor.stream',
+                body: JSON.stringify(payload)
+            });
+        }
+
+        function disconnect() {
+            if (client !== null) {
+                client.deactivate();
+                logMessage("Disconnected.");
+                document.getElementById('sendBtn').disabled = true;
+                document.getElementById('disconnectBtn').disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>
