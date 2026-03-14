@@ -1,0 +1,24 @@
+# Sentinel Backend — .gitignore
+
+# Build
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# Maven wrapper
+!.mvn/wrapper/maven-wrapper.jar
+
+# Environment
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

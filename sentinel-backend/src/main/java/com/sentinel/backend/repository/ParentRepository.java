@@ -1,0 +1,12 @@
+package com.sentinel.backend.repository;
+
+import com.sentinel.backend.model.Parent;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public interface ParentRepository extends JpaRepository<Parent, UUID> {
+    Optional<Parent> findByEmail(String email);
+    boolean existsByEmail(String email);
+}
